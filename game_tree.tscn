@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://lo0cvhptefq6"]
+
+[ext_resource type="Script" path="res://game_tree.gd" id="1_62xxo"]
+
+[node name="GameTree" type="Node"]
+script = ExtResource("1_62xxo")
+
+[node name="Players" type="Node" parent="."]
+
+[node name="PlayerList" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PlayerList"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PlayerList/MarginContainer"]
+layout_mode = 2
+
+[node name="ClientControlsList" type="VBoxContainer" parent="PlayerList/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(500, 500)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PlayerList/MarginContainer/HBoxContainer/ClientControlsList"]
+layout_mode = 2
+text = "Clients"
