@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://ui/client_controls.gd" id="1_u2sxv"]
 
 [node name="ClientControls" type="Control"]
-custom_minimum_size = Vector2(200, 32)
+custom_minimum_size = Vector2(400, 32)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_u2sxv")
@@ -16,6 +16,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="PlayerName" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "PlayerName"
+
 [node name="PeerId" type="Label" parent="HBoxContainer"]
 layout_mode = 2
 text = "peer id"
@@ -23,3 +27,7 @@ text = "peer id"
 [node name="KickButton" type="Button" parent="HBoxContainer"]
 layout_mode = 2
 text = "Kick"
+
+[node name="Ping" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "ping ms"

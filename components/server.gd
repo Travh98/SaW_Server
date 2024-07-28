@@ -2,6 +2,8 @@ extends Node
 
 ## Inspired by tutorial: https://www.youtube.com/watch?v=lnFN6YabFKg&list=PLZ-54sd-DMAKU8Neo5KsVmq8KtoDkfi4s
 
+signal ping_reported(peer_id: int, ping: float)
+
 var network: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
 var port: int = 25026
 var max_players: int = 64
@@ -31,11 +33,13 @@ func on_peer_connected(new_peer_id: int):
 	add_newly_connected_player_character.rpc(new_peer_id)
 	# Spawn a corresponding player node for the server to keep track
 	add_player_character(new_peer_id)
+	
+	spawn_existing_entities.rpc_id(new_peer_id)
 
 
 func add_player_character(peer_id: int):
 	connected_peer_ids.append(peer_id)
-	var player_char = preload("res://player/player.tscn").instantiate()
+	var player_char = preload("res://entities/player/player.tscn").instantiate()
 	player_char.set_multiplayer_authority(peer_id)
 	game_tree.players.add_child(player_char)
 	
@@ -52,6 +56,27 @@ func on_peer_disconnected(peer_id: int):
 	
 	# Update Server GUI
 	game_tree.remove_client_controls(peer_id)
+
+
+func kick_peer(peer_id: int):
+	print("Kicking user: ", str(peer_id))
+	multiplayer.multiplayer_peer.disconnect_peer(peer_id, true)
+	on_peer_disconnected(peer_id)
+
+
+func search_for_game_tree() -> bool:
+	for child in get_tree().root.get_children():
+		if child is GameTree:
+			game_tree = child
+	if game_tree == null:
+		push_warning("No game tree found")
+		return false
+	return true
+
+
+func on_client_name_changed(peer_id: int, new_name: String):
+	game_tree.update_client_name(peer_id, new_name)
+	print("Client ", peer_id, " changed name to: ", new_name)
 
 
 @rpc("call_remote")
@@ -79,18 +104,23 @@ func pong_to_client():
 	pass
 
 
-func kick_peer(peer_id: int):
-	print("Kicking user: ", str(peer_id))
-	multiplayer.multiplayer_peer.disconnect_peer(peer_id, true)
-	on_peer_disconnected(peer_id)
+@rpc("any_peer")
+func report_ping_to_server(peer_id: int, ping: float):
+	ping_reported.emit(peer_id, ping)
 
 
+@rpc("any_peer")
+func peer_name_changed(peer_id: int, new_name: String):
+	on_client_name_changed(peer_id, new_name)
+	pass
 
-func search_for_game_tree() -> bool:
-	for child in get_tree().root.get_children():
-		if child is GameTree:
-			game_tree = child
-	if game_tree == null:
-		push_warning("No game tree found")
-		return false
-	return true
+
+## Tutorial for Networked NPCs: https://www.youtube.com/watch?v=87TRvg9TSMc&list=PLRe0l8OGr7rcFTsWm3xyfCOP4NpH72vB1&index=5
+@rpc("call_remote")
+func spawn_new_entity(ent_name: String, global_pos: Vector3):
+	pass
+
+
+@rpc("call_remote")
+func spawn_existing_entities(entities: Array):
+	pass

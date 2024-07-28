@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://lo0cvhptefq6"]
 
-[ext_resource type="Script" path="res://game_tree.gd" id="1_62xxo"]
+[ext_resource type="Script" path="res://components/game_tree.gd" id="1_62xxo"]
 
 [node name="GameTree" type="Node"]
 script = ExtResource("1_62xxo")
@@ -37,3 +37,9 @@ layout_mode = 2
 [node name="Label" type="Label" parent="PlayerList/MarginContainer/HBoxContainer/ClientControlsList"]
 layout_mode = 2
 text = "Clients"
+
+[node name="CurrentLevel" type="Node" parent="."]
+
+[node name="Level" type="Node" parent="CurrentLevel"]
+
+[node name="NPCs" type="Node" parent="CurrentLevel/Level"]

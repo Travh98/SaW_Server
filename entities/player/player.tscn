@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bgtdgb33a17sn"]
 
-[ext_resource type="Script" path="res://player/player.gd" id="1_f27be"]
-[ext_resource type="Script" path="res://player/player_synchronizer.gd" id="2_e65ta"]
+[ext_resource type="Script" path="res://entities/player/player.gd" id="1_aqiwe"]
+[ext_resource type="Script" path="res://entities/player/player_synchronizer.gd" id="2_qtdnw"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_teny8"]
 properties/0/path = NodePath("MultiplayerSynchronizer:position")
@@ -15,8 +15,8 @@ properties/2/spawn = true
 properties/2/replication_mode = 1
 
 [node name="Player" type="Node"]
-script = ExtResource("1_f27be")
+script = ExtResource("1_aqiwe")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_teny8")
-script = ExtResource("2_e65ta")
+script = ExtResource("2_qtdnw")
