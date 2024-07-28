@@ -4,15 +4,20 @@ extends Node
 
 signal ping_reported(peer_id: int, ping: float)
 
+@onready var level_generator: LevelGenerator = $LevelGenerator
+
 var network: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
 var port: int = 25026
 var max_players: int = 64
 var connected_peer_ids = []
 var game_tree: GameTree
 
+
 func _ready():
 	if !search_for_game_tree():
 		return
+		
+	level_generator.level_tiles_generated.connect(on_level_tiles_generated)
 	start_server()
 
 
@@ -79,6 +84,15 @@ func on_client_name_changed(peer_id: int, new_name: String):
 	print("Client ", peer_id, " changed name to: ", new_name)
 
 
+func generate_level(seed_str: String):
+	level_generator.start_generation(seed_str)
+
+
+func on_level_tiles_generated(tile_array: String):
+	print("Sending ", tile_array.length(), " characters of tiles to clients")
+	generated_level_tiles.rpc(tile_array)
+
+
 @rpc("call_remote")
 func add_newly_connected_player_character(_peer_id: int):
 	pass
@@ -117,10 +131,15 @@ func peer_name_changed(peer_id: int, new_name: String):
 
 ## Tutorial for Networked NPCs: https://www.youtube.com/watch?v=87TRvg9TSMc&list=PLRe0l8OGr7rcFTsWm3xyfCOP4NpH72vB1&index=5
 @rpc("call_remote")
-func spawn_new_entity(ent_name: String, global_pos: Vector3):
+func spawn_new_entity(_ent_name: String, _global_pos: Vector3):
 	pass
 
 
 @rpc("call_remote")
-func spawn_existing_entities(entities: Array):
+func spawn_existing_entities(_entities: Array):
+	pass
+
+
+@rpc("call_remote")
+func generated_level_tiles(_tile_str: String):
 	pass
