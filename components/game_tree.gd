@@ -2,7 +2,10 @@ class_name GameTree
 extends Node
 
 @onready var players: Node = $Players
+@onready var npcs: Node = $CurrentLevel/Level/NPCs
 @onready var client_controls_list: Control = $PlayerList/MarginContainer/HBoxContainer/ClientControlsList
+@onready var server_controls: ServerControls = $ServerControls
+
 
 func _ready():
 	Server.ping_reported.connect(on_ping_reported)

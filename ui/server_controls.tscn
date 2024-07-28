@@ -45,3 +45,16 @@ placeholder_text = "seed"
 [node name="LevelGenButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "Generate Level"
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="SpawnRedKnight" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Spawn Red Knight"
+
+[node name="SpawnBlueKnight" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Spawn Blue Knight"

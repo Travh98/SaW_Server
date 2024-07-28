@@ -38,8 +38,6 @@ func on_peer_connected(new_peer_id: int):
 	add_newly_connected_player_character.rpc(new_peer_id)
 	# Spawn a corresponding player node for the server to keep track
 	add_player_character(new_peer_id)
-	
-	spawn_existing_entities.rpc_id(new_peer_id)
 
 
 func add_player_character(peer_id: int):
@@ -93,6 +91,20 @@ func on_level_tiles_generated(tile_array: String):
 	generated_level_tiles.rpc(tile_array)
 
 
+func spawn_red_knight():
+	var knight = preload("res://entities/npcs/npc.tscn").instantiate()
+	knight.set_multiplayer_authority(1)
+	game_tree.npcs.add_child(knight)
+	client_spawn_red_knight.rpc()
+
+
+func spawn_blue_knight():
+	var knight = preload("res://entities/npcs/npc.tscn").instantiate()
+	knight.set_multiplayer_authority(1)
+	game_tree.npcs.add_child(knight)
+	client_spawn_blue_knight.rpc()
+
+
 @rpc("call_remote")
 func add_newly_connected_player_character(_peer_id: int):
 	pass
@@ -130,16 +142,26 @@ func peer_name_changed(peer_id: int, new_name: String):
 
 
 ## Tutorial for Networked NPCs: https://www.youtube.com/watch?v=87TRvg9TSMc&list=PLRe0l8OGr7rcFTsWm3xyfCOP4NpH72vB1&index=5
-@rpc("call_remote")
-func spawn_new_entity(_ent_name: String, _global_pos: Vector3):
-	pass
+#@rpc("call_remote")
+#func spawn_new_entity(_ent_name: String, _global_pos: Vector3):
+	#pass
 
 
-@rpc("call_remote")
-func spawn_existing_entities(_entities: Array):
-	pass
+#@rpc("call_remote")
+#func spawn_existing_entities(_entities: Array):
+	#pass
 
 
 @rpc("call_remote")
 func generated_level_tiles(_tile_str: String):
+	pass
+
+
+@rpc("call_remote")
+func client_spawn_red_knight():
+	pass
+
+
+@rpc("call_remote")
+func client_spawn_blue_knight():
 	pass
