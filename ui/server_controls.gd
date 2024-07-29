@@ -26,6 +26,7 @@ func _ready():
 	
 	apply_button.pressed.connect(on_apply_server_settings)
 	
+	populate_modes.call_deferred()
 
 
 func on_level_gen():
@@ -43,6 +44,15 @@ func on_spawn_blue_knight():
 	spawn_blue_knight.emit()
 
 
+func populate_modes():
+	var mode_button_group: ButtonGroup = ButtonGroup.new()
+	for m in Server.state_mgr.ServerMode.keys():
+		var mode_button: = CheckBox.new()
+		mode_button.text = m
+		mode_button.button_group = mode_button_group
+		mode_selections.add_child(mode_button)
+
+
 func on_maps_loaded(maps_str_array: Array):
 	var maps_button_group: ButtonGroup = ButtonGroup.new()
 	for m in maps_str_array:
@@ -50,7 +60,6 @@ func on_maps_loaded(maps_str_array: Array):
 		map_button.text = str(m)
 		map_button.button_group = maps_button_group
 		map_selections.add_child(map_button)
-		
 
 
 func on_apply_server_settings():
@@ -64,6 +73,7 @@ func on_apply_server_settings():
 		if b is CheckBox:
 			if b.button_pressed == true:
 				map_str = b.text
+	
 	print("ServerUI: ", mode_str, " on map: ", map_str)
-	Server.server_changed_map(map_str)
-	Server.server_changed_mode(mode_str)
+	Server.map_mgr.server_changed_map(map_str)
+	Server.state_mgr.server_changed_mode(mode_str)

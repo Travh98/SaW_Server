@@ -1,29 +1,19 @@
 extends Node
 
-## Server interface
+## Server interface. Connects serverside managers and holds the RPC functions
 ## Inspired by tutorial: https://www.youtube.com/watch?v=lnFN6YabFKg&list=PLZ-54sd-DMAKU8Neo5KsVmq8KtoDkfi4s
 
 signal player_name_changed(peer_id: int, new_name: String)
 signal ping_reported(peer_id: int, ping: float)
-signal game_mode_changed(mode: ServerMode)
-
-enum ServerMode {
-	MODE_PVE,
-	MODE_TTT,
-}
 
 @onready var enet_server_starter: EnetServer = $EnetServerStarter
 @onready var client_mgr: ClientMgr = $ClientMgr
+@onready var state_mgr: StateMgr = $StateMgr
+@onready var map_mgr: MapMgr = $MapMgr
 @onready var level_generator: LevelGenerator = $LevelGenerator
 @onready var server_controls: ServerControls = $ServerGui/ServerControls
 @onready var player_list: PlayerList = $ServerGui/PlayerList
 @onready var npc_mgr: NpcMgr = $NpcMgr
-
-
-var tile_array_serialized: String
-var mode_name: String = "pve"
-var map_name: String = "sa_w_level"
-var server_mode: ServerMode = ServerMode.MODE_PVE
 
 
 func _ready():
@@ -41,30 +31,6 @@ func _ready():
 	server_controls.start_level_gen.connect(level_generator.start_generation)
 	server_controls.spawn_red_knight.connect(npc_mgr.spawn_red_knight)
 	server_controls.spawn_blue_knight.connect(npc_mgr.spawn_blue_knight)
-
-
-func server_changed_mode(new_mode: String):
-	if new_mode != mode_name:
-		mode_name = new_mode
-		on_game_mode_changed(mode_name)
-		mode_changed.rpc(mode_name)
-
-
-func server_changed_map(new_map: String):
-	if new_map != map_name:
-		map_name = new_map
-		map_changed.rpc(map_name)
-
-
-func on_game_mode_changed(mode_str: String):
-	match mode_str:
-		"pve":
-			server_mode = ServerMode.MODE_PVE
-		"ttt":
-			server_mode = ServerMode.MODE_TTT
-		_:
-			push_warning("Unknown game mode: ", mode_str)
-	game_mode_changed.emit(server_mode)
 
 
 @rpc("call_remote", "reliable")
@@ -99,7 +65,6 @@ func report_ping_to_server(peer_id: int, ping: float):
 
 @rpc("any_peer", "reliable")
 func peer_name_changed(peer_id: int, new_name: String):
-	print("Client ", peer_id, " changed name to: ", new_name)
 	player_name_changed.emit(peer_id, new_name)
 	pass
 
@@ -132,10 +97,10 @@ func client_spawn_blue_knight():
 
 
 @rpc("call_remote", "reliable")
-func mode_changed(mode_name: String):
+func mode_changed(_mode_name: String):
 	pass
 
 
 @rpc("call_remote", "reliable")
-func map_changed(map_name: String):
+func map_changed(_map_name: String):
 	pass

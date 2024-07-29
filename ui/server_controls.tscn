@@ -1,9 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bjv4mraa6bhhj"]
+[gd_scene load_steps=3 format=3 uid="uid://bjv4mraa6bhhj"]
 
 [ext_resource type="Script" path="res://ui/server_controls.gd" id="1_u3dyg"]
 [ext_resource type="Script" path="res://ui/server_data_loader.gd" id="2_6b243"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_8s43b"]
 
 [node name="ServerControls" type="Control"]
 layout_mode = 3
@@ -43,16 +41,6 @@ text = "Game Mode"
 [node name="ModeSelections" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 alignment = 1
-
-[node name="TttModeButton" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer2/ModeSelections"]
-layout_mode = 2
-button_group = SubResource("ButtonGroup_8s43b")
-text = "ttt"
-
-[node name="PveModeButton" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer2/ModeSelections"]
-layout_mode = 2
-button_group = SubResource("ButtonGroup_8s43b")
-text = "pve"
 
 [node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2

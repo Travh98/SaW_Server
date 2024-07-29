@@ -1,11 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://b2w23p15fiyns"]
+[gd_scene load_steps=11 format=3 uid="uid://b2w23p15fiyns"]
 
 [ext_resource type="Script" path="res://components/server.gd" id="1_rox3g"]
 [ext_resource type="Script" path="res://components/enet_server.gd" id="2_eib84"]
 [ext_resource type="Script" path="res://components/level_generator.gd" id="2_xvwyd"]
 [ext_resource type="Script" path="res://components/client_manager.gd" id="3_s7t45"]
+[ext_resource type="Script" path="res://components/state_mgr.gd" id="4_5ox4o"]
 [ext_resource type="Script" path="res://components/npc_mgr.gd" id="5_e7cxt"]
 [ext_resource type="PackedScene" uid="uid://bjv4mraa6bhhj" path="res://ui/server_controls.tscn" id="5_kktli"]
+[ext_resource type="Script" path="res://components/map_mgr.gd" id="5_rkmdi"]
 [ext_resource type="PackedScene" uid="uid://dnguqoae2sabp" path="res://ui/player_list.tscn" id="6_fj8dx"]
 [ext_resource type="PackedScene" uid="uid://7ef43wqxgjw8" path="res://components/game_modes/ttt_game_mode.tscn" id="7_efu82"]
 
@@ -17,6 +19,12 @@ script = ExtResource("2_eib84")
 
 [node name="ClientMgr" type="Node" parent="."]
 script = ExtResource("3_s7t45")
+
+[node name="StateMgr" type="Node" parent="."]
+script = ExtResource("4_5ox4o")
+
+[node name="MapMgr" type="Node" parent="."]
+script = ExtResource("5_rkmdi")
 
 [node name="LevelGenerator" type="Node" parent="."]
 script = ExtResource("2_xvwyd")

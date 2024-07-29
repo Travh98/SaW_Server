@@ -31,4 +31,5 @@ func on_ping_reported(id: int, p: float):
 func on_client_name_changed(peer_id: int, new_name: String):
 	for child in client_controls_list.get_children():
 		if child.name == str(peer_id):
+			print("Client ", peer_id, " changed name from ", child.player_name_label.text, " to: ", new_name, ".")
 			child.update_name(new_name)
