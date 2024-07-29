@@ -7,6 +7,8 @@ signal level_tiles_generated(String)
 
 const DIRECTIONS = [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]
 
+var serialized_tile_string: String
+
 var num_steps: int = 0
 var max_steps: int = 200
 var steps_since_turn: int = 0
@@ -19,6 +21,22 @@ var step_history: Array[Vector2]
 var borders: Rect2 = Rect2(-20, -39, 40, 40)
 
 
+func _ready():
+	level_tiles_generated.connect(on_level_tiles_generated)
+
+
+# Sends tile data to all Clients
+func on_level_tiles_generated(tile_array_str: String):
+	print("Sending ", tile_array_str.length(), " characters of tiles to clients")
+	Server.generated_level_tiles.rpc(tile_array_str)
+
+
+# Sends tile data to a specific client (for late joiners)
+func send_tile_data(peer_id: int):
+	if !serialized_tile_string.is_empty():
+		Server.generated_level_tiles.rpc_id(peer_id, serialized_tile_string)
+
+
 func start_generation(seed_str: String):
 	seed(seed_str.hash()) # Hash the seed to a number
 	
@@ -26,6 +44,7 @@ func start_generation(seed_str: String):
 	var pos_array: Array = generate_castle()
 	var serialized_array: String = serialize_vector2_array(pos_array)
 	#print("Serialized generation: ", serialized_array)
+	serialized_tile_string = serialized_array
 	
 	# Send tile array to Clients
 	level_tiles_generated.emit(serialized_array)

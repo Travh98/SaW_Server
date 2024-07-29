@@ -33,7 +33,7 @@ func on_level_gen():
 	var seed_str: String = seed_line_edit.text
 	if seed_str.is_empty():
 		seed_str = "balloon"
-	Server.generate_level(seed_str)
+	Server.level_generator.start_generation(seed_str)
 
 
 func on_spawn_red_knight():

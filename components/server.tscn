@@ -1,10 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2w23p15fiyns"]
+[gd_scene load_steps=5 format=3 uid="uid://b2w23p15fiyns"]
 
 [ext_resource type="Script" path="res://components/server.gd" id="1_rox3g"]
+[ext_resource type="Script" path="res://components/enet_server.gd" id="2_eib84"]
 [ext_resource type="Script" path="res://components/level_generator.gd" id="2_xvwyd"]
+[ext_resource type="Script" path="res://components/client_manager.gd" id="3_s7t45"]
 
 [node name="Server" type="Node"]
 script = ExtResource("1_rox3g")
+
+[node name="EnetServerStarter" type="Node" parent="."]
+script = ExtResource("2_eib84")
+
+[node name="ClientMgr" type="Node" parent="."]
+script = ExtResource("3_s7t45")
 
 [node name="LevelGenerator" type="Node" parent="."]
 script = ExtResource("2_xvwyd")
