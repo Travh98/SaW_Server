@@ -11,6 +11,7 @@ var port: int = 25026
 var max_players: int = 64
 var connected_peer_ids = []
 var game_tree: GameTree
+var tile_array_serialized: String
 
 
 func _ready():
@@ -38,6 +39,9 @@ func on_peer_connected(new_peer_id: int):
 	add_newly_connected_player_character.rpc(new_peer_id)
 	# Spawn a corresponding player node for the server to keep track
 	add_player_character(new_peer_id)
+	
+	if !tile_array_serialized.is_empty():
+		generated_level_tiles.rpc_id(new_peer_id, tile_array_serialized)
 
 
 func add_player_character(peer_id: int):
@@ -86,9 +90,10 @@ func generate_level(seed_str: String):
 	level_generator.start_generation(seed_str)
 
 
-func on_level_tiles_generated(tile_array: String):
-	print("Sending ", tile_array.length(), " characters of tiles to clients")
-	generated_level_tiles.rpc(tile_array)
+func on_level_tiles_generated(tile_array_str: String):
+	print("Sending ", tile_array_str.length(), " characters of tiles to clients")
+	tile_array_serialized = tile_array_str
+	generated_level_tiles.rpc(tile_array_str)
 
 
 func spawn_red_knight():
@@ -105,17 +110,17 @@ func spawn_blue_knight():
 	client_spawn_blue_knight.rpc()
 
 
-@rpc("call_remote")
+@rpc("call_remote", "reliable")
 func add_newly_connected_player_character(_peer_id: int):
 	pass
 
 
-@rpc("call_remote")
+@rpc("call_remote", "reliable")
 func add_previously_connected_player_characters(_peer_ids: Array):
 	pass
 
 
-@rpc("call_remote")
+@rpc("call_remote", "reliable")
 func remove_existing_player_character(_peer_id: int):
 	pass
 
@@ -135,7 +140,7 @@ func report_ping_to_server(peer_id: int, ping: float):
 	ping_reported.emit(peer_id, ping)
 
 
-@rpc("any_peer")
+@rpc("any_peer", "reliable")
 func peer_name_changed(peer_id: int, new_name: String):
 	on_client_name_changed(peer_id, new_name)
 	pass
@@ -152,7 +157,7 @@ func peer_name_changed(peer_id: int, new_name: String):
 	#pass
 
 
-@rpc("call_remote")
+@rpc("call_remote", "reliable")
 func generated_level_tiles(_tile_str: String):
 	pass
 

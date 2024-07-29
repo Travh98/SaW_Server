@@ -25,7 +25,7 @@ func start_generation(seed_str: String):
 	# This array is what we will rpc to clients
 	var pos_array: Array = generate_castle()
 	var serialized_array: String = serialize_vector2_array(pos_array)
-	print("Serialized generation: ", serialized_array)
+	#print("Serialized generation: ", serialized_array)
 	
 	# Send tile array to Clients
 	level_tiles_generated.emit(serialized_array)
