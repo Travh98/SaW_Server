@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://b2w23p15fiyns"]
+[gd_scene load_steps=9 format=3 uid="uid://b2w23p15fiyns"]
 
 [ext_resource type="Script" path="res://components/server.gd" id="1_rox3g"]
 [ext_resource type="Script" path="res://components/enet_server.gd" id="2_eib84"]
 [ext_resource type="Script" path="res://components/level_generator.gd" id="2_xvwyd"]
 [ext_resource type="Script" path="res://components/client_manager.gd" id="3_s7t45"]
+[ext_resource type="Script" path="res://components/npc_mgr.gd" id="5_e7cxt"]
+[ext_resource type="PackedScene" uid="uid://bjv4mraa6bhhj" path="res://ui/server_controls.tscn" id="5_kktli"]
+[ext_resource type="PackedScene" uid="uid://dnguqoae2sabp" path="res://ui/player_list.tscn" id="6_fj8dx"]
+[ext_resource type="PackedScene" uid="uid://7ef43wqxgjw8" path="res://components/game_modes/ttt_game_mode.tscn" id="7_efu82"]
 
 [node name="Server" type="Node"]
 script = ExtResource("1_rox3g")
@@ -16,3 +20,25 @@ script = ExtResource("3_s7t45")
 
 [node name="LevelGenerator" type="Node" parent="."]
 script = ExtResource("2_xvwyd")
+
+[node name="NpcMgr" type="Node" parent="."]
+script = ExtResource("5_e7cxt")
+
+[node name="ServerGui" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ServerControls" parent="ServerGui" instance=ExtResource("5_kktli")]
+layout_mode = 1
+
+[node name="PlayerList" parent="ServerGui" instance=ExtResource("6_fj8dx")]
+layout_mode = 1
+
+[node name="GameModes" type="Node" parent="."]
+
+[node name="TttGameMode" parent="GameModes" instance=ExtResource("7_efu82")]

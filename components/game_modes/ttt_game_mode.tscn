@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://7ef43wqxgjw8"]
+
+[ext_resource type="Script" path="res://components/ttt_game_mode.gd" id="1_3macq"]
+
+[node name="TttGameMode" type="Node"]
+script = ExtResource("1_3macq")
+
+[node name="WarmupTimer" type="Timer" parent="."]
+wait_time = 20.0
+
+[node name="MainStageTimer" type="Timer" parent="."]
+wait_time = 5.0
+
+[node name="PostRoundTimer" type="Timer" parent="."]
+wait_time = 15.0

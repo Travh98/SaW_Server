@@ -3,6 +3,7 @@ extends Node
 ## Server interface
 ## Inspired by tutorial: https://www.youtube.com/watch?v=lnFN6YabFKg&list=PLZ-54sd-DMAKU8Neo5KsVmq8KtoDkfi4s
 
+signal player_name_changed(peer_id: int, new_name: String)
 signal ping_reported(peer_id: int, ping: float)
 signal game_mode_changed(mode: ServerMode)
 
@@ -14,6 +15,9 @@ enum ServerMode {
 @onready var enet_server_starter: EnetServer = $EnetServerStarter
 @onready var client_mgr: ClientMgr = $ClientMgr
 @onready var level_generator: LevelGenerator = $LevelGenerator
+@onready var server_controls: ServerControls = $ServerGui/ServerControls
+@onready var player_list: PlayerList = $ServerGui/PlayerList
+@onready var npc_mgr: NpcMgr = $NpcMgr
 
 
 var tile_array_serialized: String
@@ -25,33 +29,18 @@ var server_mode: ServerMode = ServerMode.MODE_PVE
 func _ready():
 	enet_server_starter.start_server()
 	
+	player_name_changed.connect(player_list.on_client_name_changed)
+	
 	multiplayer.multiplayer_peer.peer_connected.connect(client_mgr.on_peer_connected)
 	multiplayer.multiplayer_peer.peer_disconnected.connect(client_mgr.on_peer_disconnected)
 	
-	client_mgr.client_disconnected.connect(GameTree.remove_client_controls)
+	client_mgr.client_connected.connect(player_list.add_client_controls)
+	client_mgr.client_disconnected.connect(player_list.remove_client_controls)
 	client_mgr.client_connected.connect(level_generator.send_tile_data)
 	
-
-
-
-
-func on_client_name_changed(peer_id: int, new_name: String):
-	GameTree.update_client_name(peer_id, new_name)
-	print("Client ", peer_id, " changed name to: ", new_name)
-
-
-func spawn_red_knight():
-	var knight = preload("res://entities/npcs/npc.tscn").instantiate()
-	knight.set_multiplayer_authority(1)
-	GameTree.npcs.add_child(knight)
-	client_spawn_red_knight.rpc()
-
-
-func spawn_blue_knight():
-	var knight = preload("res://entities/npcs/npc.tscn").instantiate()
-	knight.set_multiplayer_authority(1)
-	GameTree.npcs.add_child(knight)
-	client_spawn_blue_knight.rpc()
+	server_controls.start_level_gen.connect(level_generator.start_generation)
+	server_controls.spawn_red_knight.connect(npc_mgr.spawn_red_knight)
+	server_controls.spawn_blue_knight.connect(npc_mgr.spawn_blue_knight)
 
 
 func server_changed_mode(new_mode: String):
@@ -110,7 +99,8 @@ func report_ping_to_server(peer_id: int, ping: float):
 
 @rpc("any_peer", "reliable")
 func peer_name_changed(peer_id: int, new_name: String):
-	on_client_name_changed(peer_id, new_name)
+	print("Client ", peer_id, " changed name to: ", new_name)
+	player_name_changed.emit(peer_id, new_name)
 	pass
 
 
@@ -130,6 +120,7 @@ func generated_level_tiles(_tile_str: String):
 	pass
 
 
+# Tell the client to spawn a red knight
 @rpc("call_remote")
 func client_spawn_red_knight():
 	pass

@@ -3,6 +3,7 @@ extends Control
 
 ## Controls for the Server
 
+signal start_level_gen(seed: String)
 signal spawn_red_knight()
 signal spawn_blue_knight()
 
@@ -23,17 +24,15 @@ func _ready():
 	spawn_red_knight_button.pressed.connect(on_spawn_red_knight)
 	spawn_blue_knight_button.pressed.connect(on_spawn_blue_knight)
 	
-	spawn_red_knight.connect(Server.spawn_red_knight)
-	spawn_blue_knight.connect(Server.spawn_blue_knight)
-	
 	apply_button.pressed.connect(on_apply_server_settings)
+	
 
 
 func on_level_gen():
 	var seed_str: String = seed_line_edit.text
 	if seed_str.is_empty():
 		seed_str = "balloon"
-	Server.level_generator.start_generation(seed_str)
+	start_level_gen.emit(seed_str)
 
 
 func on_spawn_red_knight():
