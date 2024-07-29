@@ -12,6 +12,8 @@ var max_players: int = 64
 var connected_peer_ids = []
 var game_tree: GameTree
 var tile_array_serialized: String
+var mode_name: String = "pve"
+var map_name: String = "sa_w_level"
 
 
 func _ready():
@@ -40,8 +42,11 @@ func on_peer_connected(new_peer_id: int):
 	# Spawn a corresponding player node for the server to keep track
 	add_player_character(new_peer_id)
 	
+	# Give data to late joiners
 	if !tile_array_serialized.is_empty():
 		generated_level_tiles.rpc_id(new_peer_id, tile_array_serialized)
+	map_changed.rpc_id(new_peer_id, map_name)
+	mode_changed.rpc_id(new_peer_id, mode_name)
 
 
 func add_player_character(peer_id: int):
@@ -110,6 +115,18 @@ func spawn_blue_knight():
 	client_spawn_blue_knight.rpc()
 
 
+func server_changed_mode(new_mode: String):
+	if new_mode != mode_name:
+		mode_name = new_mode
+		mode_changed.rpc(mode_name)
+
+
+func server_changed_map(new_map: String):
+	if new_map != map_name:
+		map_name = new_map
+		map_changed.rpc(map_name)
+
+
 @rpc("call_remote", "reliable")
 func add_newly_connected_player_character(_peer_id: int):
 	pass
@@ -169,4 +186,14 @@ func client_spawn_red_knight():
 
 @rpc("call_remote")
 func client_spawn_blue_knight():
+	pass
+
+
+@rpc("call_remote", "reliable")
+func mode_changed(mode_name: String):
+	pass
+
+
+@rpc("call_remote", "reliable")
+func map_changed(map_name: String):
 	pass

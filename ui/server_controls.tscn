@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://bjv4mraa6bhhj"]
+[gd_scene load_steps=4 format=3 uid="uid://bjv4mraa6bhhj"]
 
 [ext_resource type="Script" path="res://ui/server_controls.gd" id="1_u3dyg"]
+[ext_resource type="Script" path="res://ui/server_data_loader.gd" id="2_6b243"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_8s43b"]
 
 [node name="ServerControls" type="Control"]
 layout_mode = 3
@@ -30,6 +33,43 @@ layout_mode = 2
 mouse_filter = 2
 alignment = 2
 
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Game Mode"
+
+[node name="ModeSelections" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+alignment = 1
+
+[node name="TttModeButton" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer2/ModeSelections"]
+layout_mode = 2
+button_group = SubResource("ButtonGroup_8s43b")
+text = "ttt"
+
+[node name="PveModeButton" type="CheckBox" parent="MarginContainer/HBoxContainer/VBoxContainer2/ModeSelections"]
+layout_mode = 2
+button_group = SubResource("ButtonGroup_8s43b")
+text = "pve"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Map Selection"
+
+[node name="MapSelections" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="ApplyButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Apply"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(32, 16)
+layout_mode = 2
+
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 mouse_filter = 2
@@ -58,3 +98,6 @@ text = "Spawn Red Knight"
 [node name="SpawnBlueKnight" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "Spawn Blue Knight"
+
+[node name="ServerDataLoader" type="Node" parent="."]
+script = ExtResource("2_6b243")
