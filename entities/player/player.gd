@@ -1,8 +1,21 @@
+class_name SyncedPlayer
 extends Node
 
 ## Serverside Player node with matching RPC functions to the players
 
-@onready var multiplayer_synchronizer = $MultiplayerSynchronizer
+@onready var player_sync: PlayerSync = $MultiplayerSynchronizer
 
 func _ready():
-	multiplayer_synchronizer.set_multiplayer_authority(str(name).to_int())
+	player_sync.set_multiplayer_authority(str(name).to_int())
+
+
+func get_peer_id() -> int:
+	return name.to_int()
+
+
+func get_health() -> float:
+	return player_sync.health
+
+
+func get_player_name() -> String:
+	return player_sync.name_label_text

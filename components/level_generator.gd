@@ -34,20 +34,36 @@ func on_level_tiles_generated(tile_array_str: String):
 # Sends tile data to a specific client (for late joiners)
 func send_tile_data(peer_id: int):
 	if !serialized_tile_string.is_empty():
+		print("Sending tile data to client: ", peer_id)
 		Server.generated_level_tiles.rpc_id(peer_id, serialized_tile_string)
+	else:
+		#print("No serialized tile data to send to client")
+		pass
 
 
 func start_generation(seed_str: String):
 	seed(seed_str.hash()) # Hash the seed to a number
 	
+	# Reset the generator
+	reset_generator()
+	
 	# This array is what we will rpc to clients
 	var pos_array: Array = generate_castle()
 	var serialized_array: String = serialize_vector2_array(pos_array)
-	#print("Serialized generation: ", serialized_array)
 	serialized_tile_string = serialized_array
 	
 	# Send tile array to Clients
-	level_tiles_generated.emit(serialized_array)
+	level_tiles_generated.emit(serialized_tile_string)
+
+
+func reset_generator():
+	step_history.clear()
+	last_spot = Vector2.ZERO
+	current_pos = Vector2.ZERO
+	current_dir = Vector2.UP
+	steps_since_turn = 0
+	num_steps = 0
+	serialized_tile_string = ""
 
 
 func generate_castle() -> Array[Vector2]:

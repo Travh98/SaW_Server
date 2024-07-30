@@ -24,6 +24,7 @@ func on_peer_connected(new_peer_id: int):
 	
 	#map_changed.rpc_id(new_peer_id, map_name)
 	#mode_changed.rpc_id(new_peer_id, mode_name)
+	
 
 
 func on_peer_disconnected(peer_id: int):

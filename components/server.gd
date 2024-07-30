@@ -26,7 +26,11 @@ func _ready():
 	
 	client_mgr.client_connected.connect(player_list.add_client_controls)
 	client_mgr.client_disconnected.connect(player_list.remove_client_controls)
+	
+	## Update late joiners with the current level info
 	client_mgr.client_connected.connect(level_generator.send_tile_data)
+	client_mgr.client_connected.connect(map_mgr.update_client)
+	client_mgr.client_connected.connect(state_mgr.update_client)
 	
 	server_controls.start_level_gen.connect(level_generator.start_generation)
 	server_controls.spawn_red_knight.connect(npc_mgr.spawn_red_knight)
@@ -95,4 +99,16 @@ func mode_changed(_mode_name: String):
 
 @rpc("call_remote", "reliable")
 func map_changed(_map_name: String):
+	pass
+
+
+@rpc("call_remote")
+func assign_player_faction(_peer_id: int, _faction_name: String):
+	pass
+
+
+@rpc("any_peer")
+func send_player_data(peer_id: int, player_name: String, player_color: Color):
+	print("Server sees player ", peer_id, " ", player_name, " with color: ", player_color)
+	peer_name_changed.rpc(peer_id, player_name)
 	pass
