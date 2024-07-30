@@ -70,14 +70,6 @@ func peer_name_changed(peer_id: int, new_name: String):
 
 
 ## Tutorial for Networked NPCs: https://www.youtube.com/watch?v=87TRvg9TSMc&list=PLRe0l8OGr7rcFTsWm3xyfCOP4NpH72vB1&index=5
-#@rpc("call_remote")
-#func spawn_new_entity(_ent_name: String, _global_pos: Vector3):
-	#pass
-
-
-#@rpc("call_remote")
-#func spawn_existing_entities(_entities: Array):
-	#pass
 
 
 @rpc("call_remote", "reliable")

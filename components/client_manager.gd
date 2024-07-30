@@ -48,6 +48,7 @@ func add_player_character(peer_id: int):
 	
 	var player_char = preload("res://entities/player/player.tscn").instantiate()
 	player_char.set_multiplayer_authority(peer_id)
+	player_char.name = str(peer_id)
 	GameTree.players.add_child(player_char)  # TODO make this a signal
 
 
