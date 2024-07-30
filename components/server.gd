@@ -31,6 +31,8 @@ func _ready():
 	client_mgr.client_connected.connect(level_generator.send_tile_data)
 	client_mgr.client_connected.connect(map_mgr.update_client)
 	client_mgr.client_connected.connect(state_mgr.update_client)
+	client_mgr.client_connected.connect(client_mgr.update_client)
+	player_name_changed.connect(client_mgr.on_player_name_changed)
 	
 	server_controls.start_level_gen.connect(level_generator.start_generation)
 	server_controls.spawn_red_knight.connect(npc_mgr.spawn_red_knight)

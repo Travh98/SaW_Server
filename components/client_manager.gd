@@ -7,6 +7,7 @@ signal client_connected(peer_id: int)
 signal client_disconnected(peer_id: int)
 
 var connected_peer_ids = []
+var player_names: Dictionary
 
 func on_peer_connected(new_peer_id: int):
 	print("User ", str(new_peer_id), " connected.")
@@ -19,12 +20,6 @@ func on_peer_connected(new_peer_id: int):
 	add_player_character(new_peer_id)
 	
 	client_connected.emit(new_peer_id)
-	
-	# Give data to late joiners
-	
-	#map_changed.rpc_id(new_peer_id, map_name)
-	#mode_changed.rpc_id(new_peer_id, mode_name)
-	
 
 
 func on_peer_disconnected(peer_id: int):
@@ -58,3 +53,26 @@ func kick_peer(peer_id: int):
 	
 	multiplayer.multiplayer_peer.disconnect_peer(peer_id) # optionally force
 	on_peer_disconnected(peer_id)
+
+
+func on_player_name_changed(peer_id: int, player_name: String):
+	player_names[peer_id] = player_name
+	#print("Storing player name ", player_name, " for peer id: ", peer_id)
+
+
+func is_valid_name(in_name: String) -> bool:
+	if in_name.replace(" ", "").is_empty():
+		return false
+	return true
+
+
+func update_client(peer_id: int):
+	#print("Updating late joiner client: ", peer_id, " with the names of all ", GameTree.get_child_count(), " peers")
+	for player in GameTree.players.get_children():
+		var player_peer_id: int = player.name.to_int()
+		if !player_names.has(player_peer_id):
+			continue
+		var player_peer_name: String = player_names[player_peer_id]
+		Server.peer_name_changed.rpc_id(peer_id, 
+			player_peer_id, player_peer_name)
+		#print("Sending Peer ", peer_id, " name ", player_peer_name)

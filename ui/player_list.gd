@@ -29,6 +29,9 @@ func on_ping_reported(id: int, p: float):
 
 
 func on_client_name_changed(peer_id: int, new_name: String):
+	if !Server.client_mgr.is_valid_name(new_name):
+		print("Invalid name from peer: ", peer_id)
+		return
 	for child in client_controls_list.get_children():
 		if child.name == str(peer_id):
 			print("Client ", peer_id, " changed name from ", child.player_name_label.text, " to: ", new_name, ".")
