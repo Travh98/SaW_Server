@@ -81,7 +81,6 @@ func start_main_round():
 		debug_innocents += str(innocent.get_peer_id()) + " "
 		Server.assign_player_faction.rpc(innocent.get_peer_id(), "Innocent")
 	print(debug_traitors, ". ", debug_innocents, ".")
-	
 
 
 func on_main_stage_finished():
@@ -107,5 +106,5 @@ func on_post_round_finished():
 
 func check_if_team_is_alive(arr_of_player_ids: Array):
 	for peer_id in arr_of_player_ids:
-		for player in get_parent().players:
+		for player in GameTree.players.get_children():
 			pass

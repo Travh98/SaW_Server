@@ -29,11 +29,18 @@ func on_peer_disconnected(peer_id: int):
 	Server.remove_existing_player_character.rpc(peer_id)
 	
 	# Remove our stored peer_id
-	var index: int = connected_peer_ids.find(peer_id)
-	if index > 0:
-		connected_peer_ids.remove_at(index)
-	else:
+	var found_id: bool = false
+	for index in range(connected_peer_ids.size()):
+		if connected_peer_ids[index] == peer_id:
+			connected_peer_ids.remove_at(index)
+			found_id = true
+			break
+	if !found_id:
 		print("Tried removing peer_id ", peer_id, " for disconnected player, but could not find it.")
+	
+	for player in GameTree.players.get_children():
+		if player.name == str(peer_id):
+			player.queue_free()
 	
 	client_disconnected.emit(peer_id)
 
