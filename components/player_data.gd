@@ -73,6 +73,11 @@ func revive_all_players():
 		set_player_health(peer_id, 100)
 
 
+func store_player_active_equipment_slot(peer_id: int, slot_index: int):
+	if !player_data.has(peer_id): return
+	player_data[peer_id]["active_inv_slot"] = slot_index
+
+
 func is_valid_name(in_name: String) -> bool:
 	if in_name.replace(" ", "").is_empty():
 		return false
@@ -90,6 +95,7 @@ func create_default_entry(peer_id: int):
 			"peer_id": peer_id,
 			"health": 100,
 			"color": Color.PINK,
+			"active_inv_slot": 0,
 		}
 
 

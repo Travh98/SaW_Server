@@ -162,3 +162,10 @@ func gamemode_stage_time_left(_time_left: int):
 @rpc("call_remote", "reliable")
 func ttt_team_won(_traitors_won: bool):
 	pass
+
+
+@rpc("any_peer", "reliable")
+func player_equipped_slot(peer_id: int, slot_index: int):
+	player_data.store_player_active_equipment_slot(peer_id, slot_index)
+	# Take the new data from this one peer and send it to all others
+	player_equipped_slot.rpc(peer_id, slot_index)

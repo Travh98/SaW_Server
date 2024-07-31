@@ -35,11 +35,15 @@ func on_peer_disconnected(peer_id: int):
 			found_id = true
 			break
 	if !found_id:
-		print("Tried removing peer_id ", peer_id, " for disconnected player, but could not find it.")
+		push_warning("Failed to remove peer id for peer: ", peer_id)
 	
+	var found_player_obj: bool = false
 	for player in GameTree.players.get_children():
 		if player.name == str(peer_id):
 			player.queue_free()
+			found_player_obj = true
+	if !found_player_obj:
+		push_warning("Failed to remove player object for peer: ", peer_id)
 	
 	client_disconnected.emit(peer_id)
 
