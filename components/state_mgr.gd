@@ -49,6 +49,8 @@ func game_mode_changed(old_mode: ServerMode, new_mode: ServerMode):
 	
 	match new_mode:
 		ServerMode.MODE_PVE:
+			for player in Server.client_mgr.get_children():
+				Server.assign_player_faction.rpc(player.name.to_int(), "Player")
 			pass
 		ServerMode.MODE_TTT:
 			ttt_game_mode.start_gamemode()

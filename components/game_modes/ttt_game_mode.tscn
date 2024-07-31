@@ -6,11 +6,11 @@
 script = ExtResource("1_3macq")
 
 [node name="WarmupTimer" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 15.0
 one_shot = true
 
 [node name="MainStageTimer" type="Timer" parent="."]
-wait_time = 60.0
+wait_time = 300.0
 one_shot = true
 
 [node name="PostRoundTimer" type="Timer" parent="."]

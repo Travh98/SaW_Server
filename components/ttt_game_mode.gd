@@ -31,7 +31,7 @@ func _ready():
 # Perform actions on entering each stage
 func change_stage(new_stage: GameStages):
 	stage = new_stage 
-	print("Gamemode TTT changing to ", GameStages.keys()[stage])
+	print("TTT gamemode stage: ", GameStages.keys()[stage])
 	
 	match stage:
 		GameStages.STAGE_WARMUP:
@@ -61,7 +61,6 @@ func stop_gamemode():
 
 
 func start_warmup():
-	print("Waiting for enough players to start TTT")
 	main_stage_timer.stop()
 	post_round_timer.stop()
 	
@@ -86,7 +85,6 @@ func on_warmup_finished():
 
 
 func start_main_round():
-	print("Starting main TTT Round")
 	main_stage_timer.start()
 	send_client_stage_time_left()
 	
@@ -97,7 +95,7 @@ func start_main_round():
 	
 	var players: Array = GameTree.players.get_children()
 	if players.size() < 2:
-		print("Not enough players to start TTT")
+		print("TTT: Not enough players to start TTT")
 		change_stage(GameStages.STAGE_WARMUP)
 		return
 	var first_traitor: SyncedPlayer = players.pick_random()
@@ -128,7 +126,6 @@ func on_main_stage_finished():
 
 
 func start_post_round():
-	print("Entering post-round")
 	post_round_timer.start()
 	send_client_stage_time_left()
 
@@ -141,7 +138,6 @@ func on_post_round_finished():
 
 func on_client_connected(peer_id: int):
 	# Update late joiners
-	print("Updating late joiner: ", peer_id)
 	send_client_stage_time_left()
 	Server.gamemode_stage_changed.rpc(GameStages.keys()[stage])
 	
@@ -151,7 +147,6 @@ func on_client_connected(peer_id: int):
 	Server.assign_player_faction.rpc(peer_id, "Innocent")
 	
 	# Kill the player that joins
-	print("Killing the client who joined mid-round: ", peer_id)
 	Server.player_data.set_player_health(peer_id, 0)
 
 
@@ -160,12 +155,12 @@ func on_client_disconnected(peer_id: int):
 		# Can join/leave anytime during warmup or post
 		return
 	
-	print("Client ", peer_id, " left mid-round while we had ", 
+	print("TTT: Client ", peer_id, " left mid-round while we had ", 
 		traitor_players.size(), " traitors and ", innocent_players.size(), " innocents.")
 	var traitor_client: SyncedPlayer = get_player_in_team(peer_id, traitor_players)
 	if traitor_client:
 		if traitor_players.size() <= 1:
-			print("The last traitor has left the game during the round")
+			print("TTT: The last traitor has left the game during the round")
 			traitor_players.erase(traitor_client)
 			on_main_stage_finished()
 			return
@@ -174,7 +169,7 @@ func on_client_disconnected(peer_id: int):
 	var innocent_client: SyncedPlayer = get_player_in_team(peer_id, innocent_players)
 	if innocent_client:
 		if innocent_players.size() <= 1:
-			print("The last innocent has left the game during the round")
+			print("TTT: The last innocent has left the game during the round")
 			innocent_players.erase(innocent_client)
 			on_main_stage_finished()
 			return
@@ -187,7 +182,6 @@ func on_player_died(peer_id: int):
 	if stage != GameStages.STAGE_MAIN:
 		return
 	
-	print("Player ", peer_id, " died, checking if won")
 	if get_player_in_team(peer_id, traitor_players):
 		if !check_if_team_is_alive(traitor_players):
 			on_main_stage_finished()
@@ -214,10 +208,10 @@ func get_player_in_team(peer_id: int, array_of_players: Array) -> SyncedPlayer:
 
 func calculate_win():
 	if check_if_team_is_alive(innocent_players):
-		print("Innocents win!")
+		print("TTT: Innocents win!")
 		Server.ttt_team_won.rpc(false)
 	else:
-		print("Traitors win!")
+		print("TTT: Traitors win!")
 		Server.ttt_team_won.rpc(true)
 
 

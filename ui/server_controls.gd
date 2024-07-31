@@ -74,6 +74,5 @@ func on_apply_server_settings():
 			if b.button_pressed == true:
 				map_str = b.text
 	
-	print("ServerUI: ", mode_str, " on map: ", map_str)
 	Server.map_mgr.server_changed_map(map_str)
 	Server.state_mgr.server_changed_mode(mode_str)

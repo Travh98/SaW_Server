@@ -30,6 +30,9 @@ func on_client_disconnected(peer_id: int):
 
 
 func recieve_player_name(peer_id: int, player_name: String):
+	if player_data[peer_id]["name"] == player_name:
+		return
+	
 	print(peer_id, " changing name: ", player_data[peer_id]["name"], " to ", player_name)
 	player_data[peer_id]["name"] = player_name
 	
@@ -47,7 +50,7 @@ func set_player_health(peer_id: int, health: int):
 	Server.player_health_changed.rpc(peer_id, player_data[peer_id]["health"])
 	
 	if previous_hp > 0 and health <= 0:
-		print("Server: Player has died: ", player_data[peer_id]["name"])
+		print("Player has died: ", player_data[peer_id]["name"])
 		player_died.emit(peer_id)
 
 
@@ -55,9 +58,8 @@ func set_player_health(peer_id: int, health: int):
 func damage_player(damager_id: int, target_id: int, damage: int):
 	set_player_health(target_id, player_data[target_id]["health"] - damage)
 	
-	print(player_data[damager_id]["name"], " damaged ", 
-		player_data[target_id]["name"], " for ", damage, 
-		". Health: ", player_data[target_id]["health"])
+	print(player_data[damager_id]["name"], " (hp: ", player_data[damager_id]["health"], ") hurt ", 
+		player_data[target_id]["name"], " (hp: ", player_data[target_id]["health"], ")")
 
 
 func respawn_all_players():
