@@ -15,6 +15,7 @@ signal ping_reported(peer_id: int, ping: float)
 @onready var server_controls: ServerControls = $ServerGui/ServerControls
 @onready var player_list: PlayerList = $ServerGui/PlayerList
 @onready var npc_mgr: NpcMgr = $NpcMgr
+@onready var ttt_game_mode: TttGameMode = $GameModes/TttGameMode
 
 
 func _ready():
@@ -42,6 +43,11 @@ func _ready():
 	server_controls.start_level_gen.connect(level_generator.start_generation)
 	server_controls.spawn_red_knight.connect(npc_mgr.spawn_red_knight)
 	server_controls.spawn_blue_knight.connect(npc_mgr.spawn_blue_knight)
+	
+	ttt_game_mode.respawn_all_players.connect(player_data.respawn_all_players)
+	ttt_game_mode.revive_all_players.connect(player_data.revive_all_players)
+	client_mgr.client_disconnected.connect(ttt_game_mode.on_client_disconnected)
+	player_data.player_died.connect(ttt_game_mode.on_player_died)
 
 
 @rpc("call_remote", "reliable")
@@ -123,4 +129,35 @@ func assign_player_faction(_peer_id: int, _faction_name: String):
 
 @rpc("call_remote")
 func send_player_data_from_server(_player_data: Dictionary):
+	pass
+
+
+@rpc("any_peer", "reliable")
+func damage_entity(damager_id: int, target_id: int, damage: int):
+	player_data.damage_player(damager_id, target_id, damage)
+	pass
+
+
+@rpc("call_remote")
+func player_health_changed(_peer_id: int, _new_health: int):
+	pass
+
+
+@rpc("call_remote")
+func respawn_players():
+	pass
+
+
+@rpc("call_remote", "reliable")
+func gamemode_stage_changed(_stage_name: String):
+	pass
+
+
+@rpc("call_remote", "reliable")
+func gamemode_stage_time_left(_time_left: int):
+	pass
+
+
+@rpc("call_remote", "reliable")
+func ttt_team_won(_traitors_won: bool):
 	pass

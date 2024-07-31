@@ -8,9 +8,6 @@ extends MultiplayerSynchronizer
 @export var position: Vector3
 @export var rotation: Vector3
 @export var head_rotation: Vector3
-@export var health: float
-@export var max_health: float
-@export var name_label_text: String
 @export var faction_index: int
 
 

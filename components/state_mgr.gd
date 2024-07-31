@@ -3,8 +3,6 @@ extends Node
 
 ## Manages the state of the server
 
-signal game_mode_changed(mode: StateMgr.ServerMode)
-
 enum ServerMode {
 	MODE_PVE,
 	MODE_TTT,
@@ -16,7 +14,7 @@ var server_mode: ServerMode = ServerMode.MODE_PVE : set = set_server_mode
 
 
 func _ready():
-	game_mode_changed.connect(on_game_mode_changed)
+	pass
 
 
 func server_changed_mode(new_mode_str: String):
@@ -30,14 +28,25 @@ func server_changed_mode(new_mode_str: String):
 
 func set_server_mode(new_mode: ServerMode):
 	if new_mode != server_mode:
-		server_mode = new_mode
+		var old_mode: ServerMode = server_mode
 		
+		server_mode = new_mode
 		print("ServerMode: ", ServerMode.keys()[server_mode])
-		game_mode_changed.emit(server_mode)
+		
+		game_mode_changed(old_mode, server_mode)
 		Server.mode_changed.rpc(ServerMode.keys()[server_mode])
 
 
-func on_game_mode_changed(new_mode: ServerMode):
+func game_mode_changed(old_mode: ServerMode, new_mode: ServerMode):
+	if old_mode == new_mode:
+		return
+	
+	match old_mode:
+		ServerMode.MODE_PVE:
+			pass
+		ServerMode.MODE_TTT:
+			ttt_game_mode.stop_gamemode()
+	
 	match new_mode:
 		ServerMode.MODE_PVE:
 			pass
