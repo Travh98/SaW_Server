@@ -146,6 +146,8 @@ func on_client_connected(peer_id: int):
 	
 	Server.assign_player_faction.rpc(peer_id, "Innocent")
 	
+	await get_tree().create_timer(1).timeout
+	
 	# Kill the player that joins
 	Server.player_data.set_player_health(peer_id, 0)
 
