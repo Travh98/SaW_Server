@@ -20,12 +20,12 @@ enum GameStages {
 var stage: GameStages = GameStages.STAGE_WARMUP : set = change_stage
 var innocent_players: Array
 var traitor_players: Array
+var is_active_gamemode: bool = false
 
 func _ready():
 	warmup_timer.timeout.connect(on_warmup_finished)
 	main_stage_timer.timeout.connect(on_main_stage_finished)
 	post_round_timer.timeout.connect(on_post_round_finished)
-	
 
 
 # Perform actions on entering each stage
@@ -47,11 +47,13 @@ func change_stage(new_stage: GameStages):
 
 func start_gamemode():
 	print("Starting TTT GameMode")
+	is_active_gamemode = true
 	change_stage(GameStages.STAGE_WARMUP)
 
 
 func stop_gamemode():
 	print("Stopping TTT GameMode")
+	is_active_gamemode = false
 	change_stage(GameStages.STAGE_WARMUP)
 	warmup_timer.stop()
 	main_stage_timer.stop()
@@ -66,7 +68,7 @@ func start_warmup():
 	revive_all_players.emit()
 	
 	warmup_timer.start()
-	Server.gamemode_stage_time_left.rpc(warmup_timer.time_left)
+	send_client_stage_time_left()
 	
 	for player: SyncedPlayer in GameTree.players.get_children():
 		Server.assign_player_faction.rpc(player.get_peer_id(), "Peaceful")
@@ -86,7 +88,7 @@ func on_warmup_finished():
 func start_main_round():
 	print("Starting main TTT Round")
 	main_stage_timer.start()
-	Server.gamemode_stage_time_left.rpc(main_stage_timer.time_left)
+	send_client_stage_time_left()
 	
 	revive_all_players.emit()
 	
@@ -128,7 +130,7 @@ func on_main_stage_finished():
 func start_post_round():
 	print("Entering post-round")
 	post_round_timer.start()
-	Server.gamemode_stage_time_left.rpc(post_round_timer.time_left)
+	send_client_stage_time_left()
 
 
 func on_post_round_finished():
@@ -138,14 +140,20 @@ func on_post_round_finished():
 
 
 func on_client_connected(peer_id: int):
+	# Update late joiners
+	print("Updating late joiner: ", peer_id)
+	send_client_stage_time_left()
+	Server.gamemode_stage_changed.rpc(GameStages.keys()[stage])
+	
 	if stage != GameStages.STAGE_MAIN:
 		return
 	
-	await get_tree().create_timer(3).timeout
+	Server.assign_player_faction.rpc(peer_id, "Innocent")
 	
 	# Kill the player that joins
 	print("Killing the client who joined mid-round: ", peer_id)
 	Server.player_data.set_player_health(peer_id, 0)
+
 
 func on_client_disconnected(peer_id: int):
 	if stage != GameStages.STAGE_MAIN:
@@ -211,4 +219,13 @@ func calculate_win():
 	else:
 		print("Traitors win!")
 		Server.ttt_team_won.rpc(true)
-	
+
+
+func send_client_stage_time_left():
+	match stage:
+		GameStages.STAGE_WARMUP:
+			Server.gamemode_stage_time_left.rpc(warmup_timer.time_left)
+		GameStages.STAGE_MAIN:
+			Server.gamemode_stage_time_left.rpc(main_stage_timer.time_left)
+		GameStages.STAGE_POST:
+			Server.gamemode_stage_time_left.rpc(post_round_timer.time_left)

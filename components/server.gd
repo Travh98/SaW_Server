@@ -46,6 +46,7 @@ func _ready():
 	
 	ttt_game_mode.respawn_all_players.connect(player_data.respawn_all_players)
 	ttt_game_mode.revive_all_players.connect(player_data.revive_all_players)
+	client_mgr.client_connected.connect(ttt_game_mode.on_client_connected)
 	client_mgr.client_disconnected.connect(ttt_game_mode.on_client_disconnected)
 	player_data.player_died.connect(ttt_game_mode.on_player_died)
 
