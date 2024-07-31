@@ -8,6 +8,7 @@ signal ping_reported(peer_id: int, ping: float)
 
 @onready var enet_server_starter: EnetServer = $EnetServerStarter
 @onready var client_mgr: ClientMgr = $ClientMgr
+@onready var player_data: PlayerData = $PlayerData
 @onready var state_mgr: StateMgr = $StateMgr
 @onready var map_mgr: MapMgr = $MapMgr
 @onready var level_generator: LevelGenerator = $LevelGenerator
@@ -19,7 +20,10 @@ signal ping_reported(peer_id: int, ping: float)
 func _ready():
 	enet_server_starter.start_server()
 	
-	player_name_changed.connect(player_list.on_client_name_changed)
+	# Store player name in our data
+	player_name_changed.connect(player_data.recieve_player_name)
+	# After storing the name, update our GUI
+	player_data.player_name_changed.connect(player_list.on_client_name_changed)
 	
 	multiplayer.multiplayer_peer.peer_connected.connect(client_mgr.on_peer_connected)
 	multiplayer.multiplayer_peer.peer_disconnected.connect(client_mgr.on_peer_disconnected)
@@ -31,8 +35,9 @@ func _ready():
 	client_mgr.client_connected.connect(level_generator.send_tile_data)
 	client_mgr.client_connected.connect(map_mgr.update_client)
 	client_mgr.client_connected.connect(state_mgr.update_client)
-	client_mgr.client_connected.connect(client_mgr.update_client)
-	player_name_changed.connect(client_mgr.on_player_name_changed)
+	
+	client_mgr.client_connected.connect(player_data.on_client_connected)
+	client_mgr.client_disconnected.connect(player_data.on_client_disconnected)
 	
 	server_controls.start_level_gen.connect(level_generator.start_generation)
 	server_controls.spawn_red_knight.connect(npc_mgr.spawn_red_knight)
@@ -109,8 +114,13 @@ func assign_player_faction(_peer_id: int, _faction_name: String):
 	pass
 
 
-@rpc("any_peer")
-func send_player_data(peer_id: int, player_name: String, player_color: Color):
-	print("Server sees player ", peer_id, " ", player_name, " with color: ", player_color)
-	peer_name_changed.rpc(peer_id, player_name)
+#@rpc("any_peer")
+#func send_player_data(peer_id: int, player_name: String, player_color: Color):
+	#print("Server sees player ", peer_id, " ", player_name, " with color: ", player_color)
+	#peer_name_changed.rpc(peer_id, player_name)
+	#pass
+
+
+@rpc("call_remote")
+func send_player_data_from_server(_player_data: Dictionary):
 	pass
