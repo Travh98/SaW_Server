@@ -78,6 +78,11 @@ func store_player_active_equipment_slot(peer_id: int, slot_index: int):
 	player_data[peer_id]["active_inv_slot"] = slot_index
 
 
+func store_player_hat_selection(peer_id: int, file_name: String):
+	if !player_data.has(peer_id): return
+	player_data[peer_id]["hat"] = file_name
+
+
 func is_valid_name(in_name: String) -> bool:
 	if in_name.replace(" ", "").is_empty():
 		return false
@@ -96,6 +101,7 @@ func create_default_entry(peer_id: int):
 			"health": 100,
 			"color": Color.PINK,
 			"active_inv_slot": 0,
+			"hat": "",
 		}
 
 

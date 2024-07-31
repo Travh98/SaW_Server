@@ -169,3 +169,11 @@ func player_equipped_slot(peer_id: int, slot_index: int):
 	player_data.store_player_active_equipment_slot(peer_id, slot_index)
 	# Take the new data from this one peer and send it to all others
 	player_equipped_slot.rpc(peer_id, slot_index)
+
+
+@rpc("any_peer", "reliable")
+func peer_hat_selected(peer_id: int, file_name: String):
+	player_data.store_player_hat_selection(peer_id, file_name)
+	# Take the new data from this one peer and send it to all others
+	peer_hat_selected.rpc(peer_id, file_name)
+	pass
