@@ -6,9 +6,11 @@ extends Node
 enum ServerMode {
 	MODE_PVE,
 	MODE_TTT,
+	MODE_FFA,
 }
 
 @onready var ttt_game_mode: TttGameMode = $"../GameModes/TttGameMode"
+@onready var free_for_all: FfaGameMode = $"../GameModes/FreeForAll"
 
 var server_mode: ServerMode = ServerMode.MODE_PVE : set = set_server_mode
 
@@ -46,14 +48,18 @@ func game_mode_changed(old_mode: ServerMode, new_mode: ServerMode):
 			pass
 		ServerMode.MODE_TTT:
 			ttt_game_mode.stop_gamemode()
+		ServerMode.MODE_FFA:
+			free_for_all.stop_gamemode()
 	
 	match new_mode:
 		ServerMode.MODE_PVE:
-			for player in Server.client_mgr.get_children():
+			for player in GameTree.players.get_children():
 				Server.assign_player_faction.rpc(player.name.to_int(), "Player")
 			pass
 		ServerMode.MODE_TTT:
 			ttt_game_mode.start_gamemode()
+		ServerMode.MODE_FFA:
+			free_for_all.start_gamemode()
 
 
 func update_client(peer_id: int):

@@ -49,12 +49,12 @@ func start_gamemode():
 	print("Starting TTT GameMode")
 	is_active_gamemode = true
 	change_stage(GameStages.STAGE_WARMUP)
+	Server.set_temporary_message.rpc("Traitors at Tea Time!")
 
 
 func stop_gamemode():
 	print("Stopping TTT GameMode")
 	is_active_gamemode = false
-	change_stage(GameStages.STAGE_WARMUP)
 	warmup_timer.stop()
 	main_stage_timer.stop()
 	post_round_timer.stop()
@@ -114,6 +114,7 @@ func start_main_round():
 		debug_innocents += str(innocent.get_peer_id()) + " "
 		Server.assign_player_faction.rpc(innocent.get_peer_id(), "Innocent")
 	print(debug_traitors, ". ", debug_innocents, ".")
+	Server.set_temporary_message.rpc("Round Start!")
 
 
 func on_main_stage_finished():
@@ -212,9 +213,11 @@ func calculate_win():
 	if check_if_team_is_alive(innocent_players):
 		print("TTT: Innocents win!")
 		Server.ttt_team_won.rpc(false)
+		Server.set_temporary_message.rpc("[color=green]Innocents win![/color]")
 	else:
 		print("TTT: Traitors win!")
 		Server.ttt_team_won.rpc(true)
+		Server.set_temporary_message.rpc("[color=red]Innocents win![/color]")
 
 
 func send_client_stage_time_left():

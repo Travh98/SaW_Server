@@ -67,13 +67,22 @@ func damage_player(damager_id: int, target_id: int, damage: int):
 
 func respawn_all_players():
 	for peer_id in player_data:
-		set_player_health(peer_id, 100)
+		revive_player(peer_id)
 	Server.respawn_players.rpc()
 
 
 func revive_all_players():
 	for peer_id in player_data:
-		set_player_health(peer_id, 100)
+		revive_player(peer_id)
+
+
+func revive_player(peer_id: int):
+	set_player_health(peer_id, 100)
+
+
+func respawn_player(peer_id: int):
+	revive_player(peer_id)
+	Server.respawn_player.rpc(peer_id)
 
 
 func store_player_active_equipment_slot(peer_id: int, slot_index: int):

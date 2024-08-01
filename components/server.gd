@@ -17,6 +17,7 @@ signal ping_reported(peer_id: int, ping: float)
 @onready var npc_mgr: NpcMgr = $NpcMgr
 @onready var ttt_game_mode: TttGameMode = $GameModes/TttGameMode
 @onready var freeze_on_hit_mgr: FreezeOnHitMgr = $FreezeOnHitMgr
+@onready var free_for_all: FfaGameMode = $GameModes/FreeForAll
 
 
 func _ready():
@@ -55,6 +56,9 @@ func _ready():
 	server_controls.set_freeze_time_enabled.connect(freeze_on_hit_mgr.set_freeze_enabled)
 	server_controls.set_freeze_time_msec.connect(freeze_on_hit_mgr.set_freeze_time)
 	server_controls.print_player_data.connect(player_data.print_player_data)
+	
+	Server.player_data.player_died.connect(free_for_all.on_player_died)
+	client_mgr.client_connected.connect(free_for_all.on_client_connected)
 
 
 @rpc("call_remote", "reliable")
@@ -150,8 +154,13 @@ func player_health_changed(_peer_id: int, _new_health: int):
 	pass
 
 
-@rpc("call_remote")
+@rpc("call_remote", "reliable")
 func respawn_players():
+	pass
+
+
+@rpc("call_remote", "reliable")
+func respawn_player(_peer_id: int):
 	pass
 
 
@@ -170,7 +179,7 @@ func ttt_team_won(_traitors_won: bool):
 	pass
 
 
-@rpc("any_peer", "reliable")
+@rpc("any_peer", "unreliable")
 func player_equipped_slot(peer_id: int, slot_index: int):
 	player_data.store_player_active_equipment_slot(peer_id, slot_index)
 	# Take the new data from this one peer and send it to all others
@@ -187,4 +196,9 @@ func peer_hat_selected(peer_id: int, file_name: String):
 
 @rpc("call_remote", "reliable")
 func set_game_freeze(_frozen: bool):
+	pass
+
+
+@rpc("call_remote", "reliable")
+func set_temporary_message(new_msg: String):
 	pass
