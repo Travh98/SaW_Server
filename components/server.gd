@@ -16,6 +16,7 @@ signal ping_reported(peer_id: int, ping: float)
 @onready var player_list: PlayerList = $ServerGui/PlayerList
 @onready var npc_mgr: NpcMgr = $NpcMgr
 @onready var ttt_game_mode: TttGameMode = $GameModes/TttGameMode
+@onready var freeze_on_hit_mgr: FreezeOnHitMgr = $FreezeOnHitMgr
 
 
 func _ready():
@@ -49,6 +50,11 @@ func _ready():
 	client_mgr.client_connected.connect(ttt_game_mode.on_client_connected)
 	client_mgr.client_disconnected.connect(ttt_game_mode.on_client_disconnected)
 	player_data.player_died.connect(ttt_game_mode.on_player_died)
+	
+	player_data.player_health_changed.connect(freeze_on_hit_mgr.on_player_hit)
+	server_controls.set_freeze_time_enabled.connect(freeze_on_hit_mgr.set_freeze_enabled)
+	server_controls.set_freeze_time_msec.connect(freeze_on_hit_mgr.set_freeze_time)
+	server_controls.print_player_data.connect(player_data.print_player_data)
 
 
 @rpc("call_remote", "reliable")
@@ -176,4 +182,9 @@ func peer_hat_selected(peer_id: int, file_name: String):
 	player_data.store_player_hat_selection(peer_id, file_name)
 	# Take the new data from this one peer and send it to all others
 	peer_hat_selected.rpc(peer_id, file_name)
+	pass
+
+
+@rpc("call_remote", "reliable")
+func set_game_freeze(_frozen: bool):
 	pass

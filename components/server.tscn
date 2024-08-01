@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b2w23p15fiyns"]
+[gd_scene load_steps=13 format=3 uid="uid://b2w23p15fiyns"]
 
 [ext_resource type="Script" path="res://components/server.gd" id="1_rox3g"]
 [ext_resource type="Script" path="res://components/enet_server.gd" id="2_eib84"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://components/map_mgr.gd" id="5_rkmdi"]
 [ext_resource type="PackedScene" uid="uid://dnguqoae2sabp" path="res://ui/player_list.tscn" id="6_fj8dx"]
 [ext_resource type="PackedScene" uid="uid://7ef43wqxgjw8" path="res://components/game_modes/ttt_game_mode.tscn" id="7_efu82"]
+[ext_resource type="Script" path="res://components/freeze_on_hit_mgr.gd" id="12_lt7ic"]
 
 [node name="Server" type="Node"]
 script = ExtResource("1_rox3g")
@@ -54,3 +55,9 @@ layout_mode = 1
 [node name="GameModes" type="Node" parent="."]
 
 [node name="TttGameMode" parent="GameModes" instance=ExtResource("7_efu82")]
+
+[node name="FreezeOnHitMgr" type="Node" parent="."]
+script = ExtResource("12_lt7ic")
+
+[node name="FreezeTimer" type="Timer" parent="FreezeOnHitMgr"]
+one_shot = true

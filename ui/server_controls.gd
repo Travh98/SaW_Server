@@ -6,6 +6,9 @@ extends Control
 signal start_level_gen(seed: String)
 signal spawn_red_knight()
 signal spawn_blue_knight()
+signal set_freeze_time_msec(freeze_time_msec: int)
+signal set_freeze_time_enabled(enable: bool)
+signal print_player_data()
 
 @onready var server_data_loader = $ServerDataLoader
 
@@ -17,6 +20,12 @@ signal spawn_blue_knight()
 @onready var mode_selections: Container = $MarginContainer/HBoxContainer/VBoxContainer2/ModeSelections
 @onready var apply_button: Button = $MarginContainer/HBoxContainer/VBoxContainer2/ApplyButton
 
+@onready var freeze_time_spin_box: SpinBox = $MarginContainer/HBoxContainer/VBoxContainer/GridContainer/FreezeTimeSpinBox
+@onready var apply_freeze_time: Button = $MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ApplyFreezeTime
+@onready var toggle_freeze_time_button: Button = $MarginContainer/HBoxContainer/VBoxContainer/GridContainer/ToggleFreezeTimeButton
+@onready var print_player_data_button: Button = $MarginContainer/HBoxContainer/VBoxContainer/PrintPlayerDataButton
+
+
 func _ready():
 	server_data_loader.maps_loaded.connect(on_maps_loaded)
 	
@@ -25,6 +34,11 @@ func _ready():
 	spawn_blue_knight_button.pressed.connect(on_spawn_blue_knight)
 	
 	apply_button.pressed.connect(on_apply_server_settings)
+	
+	apply_freeze_time.pressed.connect(on_freeze_time_apply)
+	toggle_freeze_time_button.toggled.connect(on_freeze_time_toggled)
+	
+	print_player_data_button.pressed.connect(func(): self.print_player_data.emit())
 	
 	populate_modes.call_deferred()
 
@@ -76,3 +90,11 @@ func on_apply_server_settings():
 	
 	Server.map_mgr.server_changed_map(map_str)
 	Server.state_mgr.server_changed_mode(mode_str)
+
+
+func on_freeze_time_apply():
+	set_freeze_time_msec.emit(freeze_time_spin_box.value)
+
+
+func on_freeze_time_toggled(enable: bool):
+	set_freeze_time_enabled.emit(enable)

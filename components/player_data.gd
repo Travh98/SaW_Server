@@ -5,6 +5,7 @@ extends Node
 
 signal player_name_changed(peer_id: int, player_name: String)
 signal player_died(peer_id: int)
+signal player_health_changed(peer_id: int, new_health: int)
 
 var player_data = {}
 
@@ -52,6 +53,8 @@ func set_player_health(peer_id: int, health: int):
 	if previous_hp > 0 and health <= 0:
 		print("Player has died: ", player_data[peer_id]["name"])
 		player_died.emit(peer_id)
+	
+	player_health_changed.emit(peer_id, player_data[peer_id]["health"])
 
 
 
@@ -113,3 +116,7 @@ func get_player_name(peer_id: int) -> String:
 func is_player_alive(peer_id: int) -> bool:
 	if !player_data.has(peer_id): return false
 	return player_data[peer_id]["health"] > 0
+
+
+func print_player_data():
+	print(player_data)

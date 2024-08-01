@@ -87,5 +87,38 @@ text = "Spawn Red Knight"
 layout_mode = 2
 text = "Spawn Blue Knight"
 
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Freeze Time"
+
+[node name="FreezeTimeSpinBox" type="SpinBox" parent="MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+min_value = 200.0
+max_value = 10000.0
+value = 500.0
+suffix = "ms"
+
+[node name="ApplyFreezeTime" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Apply"
+
+[node name="Label2" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Controls"
+
+[node name="ToggleFreezeTimeButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+toggle_mode = true
+text = "Toggle Freeze"
+
+[node name="PrintPlayerDataButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Print Player Data"
+
 [node name="ServerDataLoader" type="Node" parent="."]
 script = ExtResource("2_6b243")
